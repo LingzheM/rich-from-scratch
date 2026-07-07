@@ -22,7 +22,7 @@ class Style:
         if self.color:
             codes.append(SGR[self.color])
         if self.bgcolor:
-            codes.append()
+            codes.append(str(int(SGR[self.bgcolor]) + 10))
         return ";".join(codes)
     
 
@@ -41,6 +41,7 @@ class Style:
     @classmethod
     def parse(cls, spec):
         bold = False
+        underline = False
         color = None
         bgcolor = None
         next_is_bg = None
@@ -49,22 +50,23 @@ class Style:
                 bold = True
             elif word == "on":
                 next_is_bg = True
+            elif word == "underline":
+                underline = True
             elif word in SGR:
                 if next_is_bg:
                     bgcolor = word
                     next_is_bg = False
                 else:
                     color = word
-        return cls(bold=bold, color=color, bgcolor=bgcolor)
+        return cls(bold=bold, underline=underline, color=color, bgcolor=bgcolor)
 
 def cprint(text, style=""):
     print(Style.parse(style).render(text))
 
 
 def main():
-    cprint("Error!", "bold red")
-    cprint("OK", "green")
-    cprint("普通文字")
+    cprint(" ALERT", "bold white on red")
+    cprint("link", "underline blue")
 
 
 if __name__ == "__main__":
